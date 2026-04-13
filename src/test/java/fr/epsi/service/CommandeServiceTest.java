@@ -46,7 +46,7 @@ class CommandeServiceTest {
         double total = service.calculerTotal(panier);
 
         // THEN
-        assertEquals(6.0, total, 0.001);
+        assertEquals(999.0, total, 0.001);
     }
 
     @Test

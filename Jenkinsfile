@@ -1,3 +1,8 @@
+/**
+ * Jenkinsfile – Pipeline CI complète (Windows + Linux compatible)
+ * Projet : Boutique en ligne – ICDE848
+ */
+
 pipeline {
 
     agent any
@@ -8,9 +13,21 @@ pipeline {
     }
 
     parameters {
-        string(name: 'BRANCH', defaultValue: 'main')
-        choice(name: 'ENVIRONMENT', choices: ['dev', 'staging', 'prod'])
-        booleanParam(name: 'SKIP_TESTS', defaultValue: false)
+        string(
+            name: 'BRANCH',
+            defaultValue: 'main',
+            description: 'Branche Git à builder'
+        )
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['dev', 'staging', 'prod'],
+            description: 'Environnement de déploiement'
+        )
+        booleanParam(
+            name: 'SKIP_TESTS',
+            defaultValue: false,
+            description: 'Ignorer les tests'
+        )
     }
 
     stages {
@@ -102,11 +119,19 @@ pipeline {
                 script {
                     if (isUnix()) {
                         sh '''
-                            mvn checkstyle:checkstyle pmd:pmd pmd:cpd spotbugs:spotbugs -B
+                            mvn checkstyle:checkstyle \
+                                pmd:pmd \
+                                pmd:cpd \
+                                spotbugs:spotbugs \
+                                -B
                         '''
                     } else {
                         bat '''
-                            mvn checkstyle:checkstyle pmd:pmd pmd:cpd spotbugs:spotbugs -B
+                            mvn checkstyle:checkstyle ^
+                                pmd:pmd ^
+                                pmd:cpd ^
+                                spotbugs:spotbugs ^
+                                -B
                         '''
                     }
                 }
@@ -128,7 +153,11 @@ pipeline {
 
         stage('Archive') {
             steps {
-                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+                archiveArtifacts(
+                    artifacts: '**/target/*.jar',
+                    fingerprint: true
+                )
+                echo "Artefact archivé"
             }
         }
     }
@@ -142,8 +171,14 @@ pipeline {
         failure {
             emailext(
                 subject: "❌ FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: "Build échoué. Voir logs : ${env.BUILD_URL}",
-                to: 'equipe-dev@monentreprise.fr'
+                body: """
+Build échoué
+
+Job   : ${env.JOB_NAME}
+Build : ${env.BUILD_NUMBER}
+URL   : ${env.BUILD_URL}
+                """,
+                to: 'ismaelcherif2023@gmail.com'
             )
         }
 
@@ -151,7 +186,7 @@ pipeline {
             emailext(
                 subject: "✅ FIXED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 body: "Build redevenu stable : ${env.BUILD_URL}",
-                to: 'equipe-dev@monentreprise.fr'
+                to: 'ismaelcherif2023@gmail.com'
             )
         }
     }
