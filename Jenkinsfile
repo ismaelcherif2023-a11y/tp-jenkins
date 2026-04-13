@@ -163,30 +163,16 @@ pipeline {
     }
 
     post {
-
-        always {
-            echo "Pipeline terminée — statut : ${currentBuild.currentResult}"
-        }
-
         failure {
             emailext(
-                subject: "❌ FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: """
-Build échoué
+                subject: "Build FAILED - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """Le build a échoué.
 
-Job   : ${env.JOB_NAME}
-Build : ${env.BUILD_NUMBER}
-URL   : ${env.BUILD_URL}
-                """,
-                to: 'ismaelcherif2023@gmail.com'
-            )
-        }
-
-        fixed {
-            emailext(
-                subject: "✅ FIXED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: "Build redevenu stable : ${env.BUILD_URL}",
-                to: 'ismaelcherif2023@gmail.com'
+Projet : ${env.JOB_NAME}
+Build : #${env.BUILD_NUMBER}
+URL : ${env.BUILD_URL}
+""",
+                to: "dydoudubg@gmail.com"
             )
         }
     }
