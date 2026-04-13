@@ -15,7 +15,13 @@
     <property name="severity" value="warning"/>
     <property name="fileExtensions" value="java"/>
 
+    <!-- ✅ AJOUTER ICI -->
+    <module name="LineLength">
+        <property name="max" value="120"/>
+    </module>
+
     <module name="TreeWalker">
+
 
         <!-- ─────────────────────────────────
              NOMMAGE
@@ -40,9 +46,7 @@
         ───────────────────────────────── -->
 
         <!-- Ligne max 120 caractères -->
-        <module name="LineLength">
-            <property name="max" value="120"/>
-        </module>
+        
 
         <!-- Méthode max 50 lignes -->
         <module name="MethodLength">
