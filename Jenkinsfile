@@ -10,20 +10,20 @@ pipeline {
 
         stage('Build + Tests + Coverage') {
             steps {
-                sh 'mvn clean verify -B'
+                bat 'mvn clean verify -B'
             }
             post {
                 always {
-                    junit '**/target/surefire-reports/*.xml'
-                    junit '**/target/failsafe-reports/*.xml'
-                    archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                    junit testResults: '**/target/surefire-reports/*.xml', allowEmptyResults: true
+                    junit testResults: '**/target/failsafe-reports/*.xml', allowEmptyResults: true
+                    archiveArtifacts artifacts: 'target/*.jar', fingerprint: true, allowEmptyArchive: true
                 }
             }
         }
 
         stage('Qualite statique') {
             steps {
-                sh 'mvn checkstyle:checkstyle pmd:pmd pmd:cpd spotbugs:spotbugs -B'
+                bat 'mvn checkstyle:checkstyle pmd:pmd pmd:cpd spotbugs:spotbugs -B'
             }
             post {
                 always {
@@ -45,6 +45,9 @@ URL : ${env.BUILD_URL}
 """,
                 to: "ismaelcherif2023@gmail.com"
             )
+        }
+        success {
+            echo "Build réussi !"
         }
     }
 }
